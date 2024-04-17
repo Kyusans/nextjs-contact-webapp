@@ -1,3 +1,15 @@
+Package nga gi gamit
+npx shadcn-ui@latest init
+npm install next-themes
+npx shadcn-ui@latest add button 
+npx shadcn-ui@latest add dropdown-menu
+npx shadcn-ui@latest add form
+npx shadcn-ui@latest add input
+npx shadcn-ui@latest add card
+
+
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
