@@ -1,21 +1,15 @@
 "use client"
-
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
+import axios from "axios"
+import { toast } from "sonner"
+import { useState } from "react"
+import Spinner from "./ui/spinner"
 
 const formSchema = z.object({
   username: z.string().min(1, {
@@ -27,6 +21,9 @@ const formSchema = z.object({
 })
 
 export default function LoginForm() {
+
+  const [isLoading, setIsloading] = useState(false);
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,8 +33,26 @@ export default function LoginForm() {
   })
 
 
-  function onSubmit(values) {
-    console.log(values)
+  const onSubmit = async (values) => {
+    setIsloading(true);
+    try {
+      const url = localStorage.getItem("url") + "user.php";
+      const formData = new FormData();
+      formData.append("operation", "login");
+      formData.append("json", JSON.stringify(values));
+      const res = await axios.post(url, formData);
+      console.log("res mo to, " + JSON.stringify(res));
+      if (res.data === 0) {
+        toast.error("Invalid username or password");
+      } else {
+        toast.success("Login successful");
+      }
+    } catch (error) {
+      toast.error("Network error")
+      console.log("error ni login: " + error);
+    } finally {
+      setIsloading(false);
+    }
   }
 
   return (
@@ -74,7 +89,8 @@ export default function LoginForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+
+            <Button type="submit" disabled={isLoading}> {isLoading && <Spinner />} <p className="ml-2">Submit</p></Button>
           </form>
         </CardContent>
       </Card>
